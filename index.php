@@ -69,13 +69,13 @@ $app->get('/', function () {
 	$recipients = json_decode(file_get_contents(__DIR__.'/bridge_alert_recipients.json'));
 	
 	/**
-	 * I'm going to use Swiftmailer to build an e-mail messsage
+	 * I'm going to use Swiftmailer to build and send the e-mail messsage
 	 */
 
 	// Create the message
 	$message = Swift_Message::newInstance()->setSubject($email_subject)
 	->setFrom(array('noreply@edwardyarnold.co.uk' => 'Ed\'s Bridge Status Service'))
-	->setTo($recipients)
+	->setBcc($recipients)
 	->setBody($email_plaintext_contents);
 
 	// Create the Transport
