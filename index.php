@@ -72,17 +72,20 @@ $app->get('/', function () {
 	 * I'm going to use Swiftmailer to build and send the e-mail messsage
 	 */
 
-	// Create the message
-	$message = Swift_Message::newInstance()->setSubject($email_subject)
-	->setFrom(array('noreply@edwardyarnold.co.uk' => 'Ed\'s Bridge Status Service'))
-	->setBcc($recipients)
-	->setBody($email_plaintext_contents);
-
 	// Create the Transport
 	$transport = Swift_MailTransport::newInstance();
 	$mailer = Swift_Mailer::newInstance($transport);
 
-	$result = $mailer->send($message);
+	foreach($recipients as $recipient_email => $recipient_name) {
+		// Create the message
+		$message = Swift_Message::newInstance()->setSubject($email_subject)
+		->setFrom(array('noreply@edwardyarnold.co.uk' => 'Ed\'s Bridge Status Service'))
+		->setTo(array($recipient_email => $recipient_name))
+		->setBody($email_plaintext_contents);
+
+
+		$result = $mailer->send($message);
+	}
 
 	return $email_plaintext_contents;
 	
