@@ -84,7 +84,7 @@ $app->get('/', function () {
 
 	$result = $mailer->send($message);
 
-	return $return_message;
+	return $email_plaintext_contents;
 	
 });
 
