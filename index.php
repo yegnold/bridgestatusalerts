@@ -25,27 +25,30 @@ $app->get('/', function () {
 		/**
 		 * If Guzzle throws a BadResponseException, we couldn't load the bridge status page...
 		 */
-		$output = '';
-	    $output .=  'Could not get bridge status page - Uh oh! ' . $e->getMessage() . "\n";
-	    $output .=  'HTTP request URL: ' . $e->getRequest()->getUrl() . "\n";
-	    $output .=  'HTTP request: ' . $e->getRequest() . "\n";
-	    $output .=  'HTTP response status: ' . $e->getResponse()->getStatusCode() . "\n";
-	    $output .=  'HTTP response: ' . $e->getResponse() . "\n";
-	    return $output;
+		$error_details = '';
+	    $error_details .=  'Could not get bridge status page - Uh oh! ' . $e->getMessage() . "\n";
+	    $error_details .=  'HTTP request URL: ' . $e->getRequest()->getUrl() . "\n";
+	    $error_details .=  'HTTP request: ' . $e->getRequest() . "\n";
+	    $error_details .=  'HTTP response status: ' . $e->getResponse()->getStatusCode() . "\n";
+	    
 	}
 
-	/**
-	 * I'm going to use the Symfony DomCrawler component to inspect the contents of the page
-	 */	
-	$crawler = new Symfony\Component\DomCrawler\Crawler($response->getBody(true));
+	if(!isset($error_details)) {
+		/**
+		 * I'm going to use the Symfony DomCrawler component to inspect the contents of the page
+		 */	
+		$crawler = new Symfony\Component\DomCrawler\Crawler($response->getBody(true));
 
-	/**
-	 * Right now, I'm going to determine if everything is OK based on whether or not
-	 * the page contains two "status_green.gif" images contained with a td.status_content
-	 *
-	 * If the page layout/markup of the page ever changes, this logic will need to be updated!
-	 */
-	$number_of_green_statuses = $crawler->filter('td.status_content img[src$="status_green.gif"]');
+		/**
+		 * Right now, I'm going to determine if everything is OK based on whether or not
+		 * the page contains two "status_green.gif" images contained with a td.status_content
+		 *
+		 * If the page layout/markup of the page ever changes, this logic will need to be updated!
+		 */
+		$number_of_green_statuses = $crawler->filter('td.status_content img[src$="status_green.gif"]');
+	} else {
+		$number_of_green_statuses = 0;
+	}
 	
 	if(count($number_of_green_statuses) != 2) {
 		$bridge_good = false;
@@ -58,8 +61,9 @@ $app->get('/', function () {
 	// E-mail plaintext contents...
 	$email_plaintext_contents = ($bridge_good ? "All seems to be OK with the Severn Bridge crossing.\n\nDouble check: http://www.severnbridge.co.uk/bridge_status.shtml" : "There's possibly a problem with the Severn bridges!\n\nGo and have a look: http://www.severnbridge.co.uk/bridge_status.shtml");
 
-
-//'';
+	if(isset($error_details) && strlen($error_details)) {
+		$email_plaintext_contents .= "\n\n".$error_details;
+	}
 
 	/**
 	 * I'm going to mail the $return_message to defined recipients.
