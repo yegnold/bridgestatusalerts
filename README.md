@@ -12,7 +12,7 @@ This tool does that for him..
 
 ### How it works
 
-At 0545, 1345, 1450 and 2250 it will check the contents of the page at the following URL:
+It will check the contents of the page at the following URL:
 
 http://www.severnbridge.co.uk/bridge_status.shtml
 
@@ -31,3 +31,9 @@ I'm using swiftmailer to send emails.
 
 Recipients of the alerts (at the time of writing, Craig only) are to be defined in json format in the file
 bridge_alert_recipients.json.
+
+### Recommended Usage
+
+* Install the app on your web server.
+* Define recipients for the alerts in bridge_alert_recipients.json.
+* Set up cron jobs to access the app at times you want the bridge checked.

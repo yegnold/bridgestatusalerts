@@ -54,7 +54,7 @@ $app->get('/', function () {
 	}
 
 	// E-mail subject...
-	$email_subject = ($bridge_good ? 'Bridge Status '.date('j F Y').' - All seems to be OK with the Severn Bridge crossing.' : 'Bridge Status '.date('j F Y').' - There is a possible problem with the Severn Bridge crossing');
+	$email_subject = ($bridge_good ? 'Bridge Status '.date('j F Y H:i').' - All seems to be OK with the Severn Bridge crossing.' : 'Bridge Status '.date('j F Y H:i').' - There is a possible problem with the Severn Bridge crossing');
 	// E-mail plaintext contents...
 	$email_plaintext_contents = ($bridge_good ? "All seems to be OK with the Severn Bridge crossing.\n\nDouble check: http://www.severnbridge.co.uk/bridge_status.shtml" : "There's possibly a problem with the Severn bridges!\n\nGo and have a look: http://www.severnbridge.co.uk/bridge_status.shtml");
 
