@@ -18,7 +18,7 @@ $app->get('/', function () {
 	try {
 		$client = new Guzzle\Http\Client('http://www.severnbridge.co.uk');
 		// Create a request
-		$request = $client->get('/bridge_status.shtml');
+		$request = $client->get('/status.html');
 		// Send the request and get the response
 		$response = $request->send();
 	} catch(Guzzle\Http\Exception\BadResponseException $e) {
@@ -41,11 +41,11 @@ $app->get('/', function () {
 
 		/**
 		 * Right now, I'm going to determine if everything is OK based on whether or not
-		 * the page contains two "status_green.gif" images contained with a td.status_content
+		 * the page contains two "green.png" images contained within #main .status_container .status_image divs
 		 *
 		 * If the page layout/markup of the page ever changes, this logic will need to be updated!
 		 */
-		$number_of_green_statuses = $crawler->filter('td.status_content img[src$="status_green.gif"]');
+		$number_of_green_statuses = $crawler->filter('#main .status_container .status_image img[src$="green.png"]');
 	} else {
 		$number_of_green_statuses = 0;
 	}
@@ -59,7 +59,7 @@ $app->get('/', function () {
 	// E-mail subject...
 	$email_subject = ($bridge_good ? 'Bridge Status '.date('j F Y H:i').' - All seems to be OK with the Severn Bridge crossing.' : 'Bridge Status '.date('j F Y H:i').' - There is a possible problem with the Severn Bridge crossing');
 	// E-mail plaintext contents...
-	$email_plaintext_contents = ($bridge_good ? "All seems to be OK with the Severn Bridge crossing.\n\nDouble check: http://www.severnbridge.co.uk/bridge_status.shtml" : "There's possibly a problem with the Severn bridges!\n\nGo and have a look: http://www.severnbridge.co.uk/bridge_status.shtml");
+	$email_plaintext_contents = ($bridge_good ? "All seems to be OK with the Severn Bridge crossing.\n\nDouble check: http://www.severnbridge.co.uk/status.html" : "There's possibly a problem with the Severn bridges!\n\nGo and have a look: http://www.severnbridge.co.uk/bridge_status.shtml");
 
 	if(isset($error_details) && strlen($error_details)) {
 		$email_plaintext_contents .= "\n\n".$error_details;
